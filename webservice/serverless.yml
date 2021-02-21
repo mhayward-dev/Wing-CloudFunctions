@@ -9,6 +9,8 @@ provider:
     API_URL: ${file(./config/environment.${opt:stage, self:provider.stage, 'dev'}.json):API_URL}
     AUTH0_WEB_CLIENT_ID: ${file(./config/secrets.${opt:stage, self:provider.stage, 'dev'}.json):AUTH0_WEB_CLIENT_ID}
     AUTH0_CLIENT_PUBLIC_KEY: ${file(./config/auth0_${opt:stage, self:provider.stage, 'dev'}_publickey)}
+  apiGateway:
+    shouldStartNameWithService: true
 
 functions:
   webAuth:
@@ -38,7 +40,7 @@ resources:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
-        TableName: Users-${opt:stage, self:provider.stage}
+        TableName: Profiles-${opt:stage, self:provider.stage}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S

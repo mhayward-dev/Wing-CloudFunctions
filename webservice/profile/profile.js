@@ -1,19 +1,20 @@
 const AWS = require('aws-sdk');
-
+const uuid = require('uuid');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.add = (event, context, callback) => {
     const timestamp = new Date().getTime();
     const data = JSON.parse(event.body);
 
-    const user = {
-        id: data.id,
+    const profile = {
+        id: uuid.v1(),
+        userId: data.id,
         email: data.email,
         updatedAt: timestamp,
         createdAt: timestamp
     };
 
-    putUser(user).then(() => {
+    putProfile(profile).then(() => {
         callback(null, {
             statusCode: 201,
             headers: {
@@ -38,9 +39,9 @@ module.exports.update = (event, context, callback) => callback(null, {
     }),
 });
 
-function putUser(user) {
+function putProfile(profile) {
     return dynamoDb.put({
-        TableName: 'Users-' + process.env.STAGE,
-        Item: user
+        TableName: 'Profiles-' + process.env.STAGE,
+        Item: profile
     }).promise();
 }
