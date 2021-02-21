@@ -1,0 +1,22 @@
+{
+  "name": "wing-cloudfunctions",
+  "version": "1.0.0",
+  "description": "Cloud functions for the Wing iOS app. Using AWS Lambdas and NodeJS",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mhayward-dev/Wing-CloudFunctions.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mhayward-dev/Wing-CloudFunctions/issues"
+  },
+  "homepage": "https://github.com/mhayward-dev/Wing-CloudFunctions#readme",
+  "dependencies": {
+    "jsonwebtoken": "^8.1.0"
+  },
+  "devDependencies": {}
+}
