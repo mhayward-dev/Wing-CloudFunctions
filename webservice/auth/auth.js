@@ -27,42 +27,24 @@ const generatePolicy = (principalId, effect, resource) => {
 module.exports.webAuth = (event, context, callback) => {
   console.log('event', event);
 
-  if (!event.authorizationToken) {
-    return false;
-  }
-
-  const tokenParts = event.authorizationToken.split(' ');
-  const tokenValue = tokenParts[1];
-
-  if (!doesTokenExist(tokenParts, tokenValue)) {
-    callback('Unauthorized');
-  }
-
   const options = {
     audience: AUTH0_WEB_CLIENT_ID,
   };
 
-  try {
-    jwt.verify(tokenValue, AUTH0_CLIENT_PUBLIC_KEY, options, (verifyError, decoded) => {
-      if (verifyError) {
-        console.log('verifyError', verifyError);
-        // 401 Unauthorized
-        console.log(`Token invalid. ${verifyError}`);
-        return callback('Unauthorized');
-      }
-      // is custom authorizer function
-      console.log('valid from customAuthorizer', decoded);
-      return callback(null, generatePolicy(decoded.sub, 'Allow', event.methodArn));
-    });
-  } catch (err) {
-    console.log('catch error. Invalid token', err);
-    return callback('Unauthorized');
-  }
+  verifyJwt(options, event, callback);
 };
 
 module.exports.machineAuth = (event, context, callback) => {
   console.log('event', event);
 
+  const options = {
+    audience: API_URL,
+  };
+
+  verifyJwt(options, event, callback);
+};
+
+function verifyJwt(options, event, callback) {
   if (!event.authorizationToken) {
     return false;
   }
@@ -73,10 +55,6 @@ module.exports.machineAuth = (event, context, callback) => {
   if (!doesTokenExist(tokenParts, tokenValue)) {
     callback('Unauthorized');
   }
-
-  const options = {
-    audience: API_URL,
-  };
 
   try {
     jwt.verify(tokenValue, AUTH0_CLIENT_PUBLIC_KEY, options, (verifyError, decoded) => {
@@ -94,7 +72,7 @@ module.exports.machineAuth = (event, context, callback) => {
     console.log('catch error. Invalid token', err);
     return callback('Unauthorized');
   }
-};
+}
 
 function doesTokenExist(tokenParts, tokenValue) {
   return (tokenParts[0].toLowerCase() === 'bearer' && tokenValue);
